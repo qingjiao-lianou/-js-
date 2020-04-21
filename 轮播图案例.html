@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .box {
+            width: 730px;
+            height: 454px;
+            padding: 8px;
+            border: 1px solid green;
+            margin: 100px auto;
+        }
+
+        .inner {
+            position: relative;
+            overflow: hidden;
+            height: 454px;
+        }
+
+        #imglist {
+            width: 700%;
+            position: absolute;
+            left: 0;
+            transition: left 300ms linear;
+        }
+
+        li {
+            float: left;
+        }
+
+        .list {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            margin-left: -85px;
+        }
+
+        .list i {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            color: #333;
+            float: left;
+            font-style: normal;
+            line-height: 20px;
+            font-size: 14px;
+            text-align: center;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .list i:last-child {
+            margin-right: 0;
+        }
+
+        .list i.current {
+            background-color: skyblue;
+            color: #fff;
+        }
+
+        .arrow {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            margin-top: -30px;
+        }
+
+        .arrow-left,
+        .arrow-right {
+            width: 30px;
+            height: 60px;
+            position: absolute;
+            font: 20px/60px "consolas";
+            color: #fff;
+            background-color: rgba(0, 0, 0, .3);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .arrow-right {
+            right: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box">
+        <div class="inner" id="inner">
+            <ul id="imglist">
+                <li><a href="#"><img src="images/1.jpg" alt=""></a></li>
+                <li><a href="#"><img src="images/2.jpg" alt=""></a></li>
+                <li><a href="#"><img src="images/3.jpg" alt=""></a></li>
+                <li><a href="#"><img src="images/4.jpg" alt=""></a></li>
+                <li><a href="#"><img src="images/5.jpg" alt=""></a></li>
+                <li><a href="#"><img src="images/6.jpg" alt=""></a></li>
+            </ul>
+            <div class="list">
+                <i class="current">1</i>
+                <i>2</i>
+                <i>3</i>
+                <i>4</i>
+                <i>5</i>
+                <i>6</i>
+            </div>
+            <div class="arrow">
+                <span class="arrow-left">&lt;</span>
+                <span class="arrow-right">&gt;</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    // 图片加载完毕后执行(这样可以获取图片宽度)
+    window.onload = function () {
+        // 获取小圆点
+        let dot = document.querySelectorAll('.list>i')
+        // 获取一张图片
+        let img = document.querySelector('#imglist img')
+        // console.log(img.offsetWidth);
+        // 获取ul
+        let ul = document.querySelector('#imglist')
+        // 序号轮播
+        dot.forEach((e, i) => {
+            e.onmouseover = () => {
+                // 排他
+                dot.forEach(e => {
+                    e.classList.remove('current')
+                })
+                // 使整个ul像左移动i个图片距离
+                ul.style.left = i * img.offsetWidth * -1 + 'px'
+                e.classList.add('current')
+                // 索引同步
+                index = i
+            };
+        })
+        // 获取左右按钮
+        let leftBut = document.querySelector('.arrow-left')
+        let rightBut = document.querySelector('.arrow-right')
+        // 图片当前索引
+        let index = 0
+        // 按钮轮播
+        rightBut.onclick = function () {
+            if (index === dot.length - 1) {
+                index = 0
+            } else {
+                index++
+            }
+            ul.style.left = index * img.offsetWidth * -1 + 'px'
+            dot.forEach(e => {
+                e.classList.remove('current')
+            })
+            dot[index].classList.add('current')
+        }
+        leftBut.onclick = function () {
+            if (index === 0) {
+                index = dot.length - 1
+            } else {
+                index--
+            }
+            ul.style.left = index * img.offsetWidth * -1 + 'px'
+            dot.forEach(e => {
+                e.classList.remove('current')
+            })
+            dot[index].classList.add('current')
+        }
+        // 自动轮播
+        let timer = setInterval(() => {
+            rightBut.onclick()
+        }, 2000);
+        // 鼠标移入时停止轮播
+        let box = document.querySelector('#box')
+        box.onmouseover = () => {
+            clearInterval(timer)
+        };
+        // 鼠标移出时继续轮播
+        box.onmouseout = () => {
+            timer = setInterval(() => {
+                rightBut.onclick()
+            }, 2000);
+        };
+    }
+</script>
+
+</html>
